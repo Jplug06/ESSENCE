@@ -63,7 +63,7 @@ const products = [
         concentration: "Body Spray",
         longevity: "3–5 hours",
         price: 39.99,
-        image: "MONOGOTAS.jpg",
+        image: "MONOTAS.jpg",
         featured: false
     },
     {
@@ -74,7 +74,7 @@ const products = [
         concentration: "Body Spray",
         longevity: "3–5 hours",
         price: 39.99,
-        image: "MONOGOTAS.jpg",
+        image: "MONOTAS.jpg",
         featured: false
     },
     {
@@ -85,7 +85,7 @@ const products = [
         concentration: "Body Spray",
         longevity: "3–5 hours",
         price: 39.99,
-        image: "MONOGOTAS.jpg",
+        image: "MONOTAS.jpg",
         featured: false
     },
     {
