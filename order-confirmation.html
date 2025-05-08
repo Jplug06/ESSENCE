@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation | Essence Elegance</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Essence Elegance</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Shop</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="#" id="search-icon"><i class="fas fa-search"></i></a>
+                <a href="cart.html" id="cart-icon"><i class="fas fa-shopping-cart"></i><span id="cart-count">0</span></a>
+            </div>
+            <div class="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+        <div class="search-container">
+            <div class="container">
+                <input type="text" id="search-input" placeholder="Search for fragrances...">
+                <button id="close-search"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Order Confirmation</h1>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <a href="cart.html">Cart</a> / <a href="checkout.html">Checkout</a> / <span>Confirmation</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="confirmation-section">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="confirmation-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Thank You for Your Order!</h2>
+                <p>Your order has been placed successfully. We will contact you shortly to confirm your order details.</p>
+                
+                <div class="order-info">
+                    <h3>Order Information</h3>
+                    <div class="order-details">
+                        <div class="detail-item">
+                            <span>Order Number:</span>
+                            <span id="order-number"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Order Date:</span>
+                            <span id="order-date"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Payment Method:</span>
+                            <span>Cash on Delivery</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="confirmation-summary">
+                    <h3>Order Summary</h3>
+                    <div id="confirmation-items">
+                        <!-- Order items will be loaded here via JavaScript -->
+                    </div>
+                    <div class="order-totals">
+                        <div class="order-subtotal">
+                            <span>Subtotal</span>
+                            <span id="confirmation-subtotal">$0.00</span>
+                        </div>
+                        <div class="order-shipping">
+                            <span>Shipping</span>
+                            <span id="confirmation-shipping">$0.00</span>
+                        </div>
+                        <div class="order-total">
+                            <span>Total</span>
+                            <span id="confirmation-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="confirmation-buttons">
+                    <a href="products.html" class="btn">Continue Shopping</a>
+                    <a href="#" class="btn btn-outline" id="print-order">Print Order</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

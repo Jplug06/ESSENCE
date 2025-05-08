@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Essence Elegance</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <header class="admin-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" class="logo-container">
+                    <h1>Essence Elegance <span>Admin</span></h1>
+                </a>
+            </div>
+            <div class="admin-nav">
+                <a href="index.html" class="btn btn-outline btn-small">View Store</a>
+                <button id="admin-logout" class="btn btn-small">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-sidebar">
+            <ul class="admin-menu">
+                <li class="active"><a href="#orders"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="#products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <div class="admin-content">
+            <div class="admin-section active" id="orders-section">
+                <div class="admin-section-header">
+                    <h2>Order Management</h2>
+                    <div class="admin-actions">
+                        <div class="search-box">
+                            <input type="text" id="order-search" placeholder="Search orders...">
+                            <button><i class="fas fa-search"></i></button>
+                        </div>
+                        <select id="order-filter">
+                            <option value="all">All Orders</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-list">
+                            <!-- Orders will be loaded here via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-pagination">
+                    <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                    <span class="pagination-info">Page 1 of 1</span>
+                    <button class="pagination-btn" disabled><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div class="admin-section" id="products-section">
+                <div class="admin-section-header">
+                    <h2>Product Management</h2>
+                    <button class="btn" id="add-product-btn"><i class="fas fa-plus"></i> Add Product</button>
+                </div>
+                <p>Product management functionality will be implemented here.</p>
+            </div>
+
+            <div class="admin-section" id="customers-section">
+                <div class="admin-section-header">
+                    <h2>Customer Management</h2>
+                </div>
+                <p>Customer management functionality will be implemented here.</p>
+            </div>
+
+            <div class="admin-section" id="settings-section">
+                <div class="admin-section-header">
+                    <h2>Settings</h2>
+                </div>
+                <p>Settings functionality will be implemented here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="admin-modal" id="order-details-modal">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h3>Order Details</h3>
+                <button class="admin-modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="admin-modal-body" id="order-details-content">
+                <!-- Order details will be loaded here via JavaScript -->
+            </div>
+            <div class="admin-modal-footer">
+                <button class="btn btn-outline admin-modal-close">Close</button>
+                <button class="btn" id="update-order-status">Update Status</button>
+            </div>
+        </div>
+    </div>
+
+    </styles>
+    <script>
+        // Admin JavaScript
+
+// Sample orders data (in a real application, this would come from a database)
+const orders = [
+    {
+        id: 'EE123456789',
+        customer: 'John Doe',
+        email: 'john.doe@example.com',
+        phone: '+233 55 123 4567',
+        date: '2025-04-15',
+        items: [
+            { id: 1, name: 'AVENTOS', price: 1169.87, quantity: 1 },
+            { id: 4, name: 'INTENSE MAN', price: 909.87, quantity: 2 }
+        ],
+        subtotal: 2989.61,
+        shipping: 0,
+        total: 2989.61,
+        status: 'delivered',
+        address: '123 Main St, Accra, Ghana',
+        notes: 'Please call before delivery'
+    },
+    {
+        id: 'EE123456790',
+        customer: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        phone: '+233 24 987 6543',
+        date: '2025-04-18',
+        items: [
+            { id: 2, name: 'BARAKKAT ROUGE 540', price: 1689.87, quantity: 1 }
+        ],
+        subtotal: 1689.87,
+        shipping: 130,
+        total: 1819.87,
+        status: 'processing',
+        address: '456 Park Ave, Kumasi, Ghana',
+        notes: ''
+    },
+    {
+        id: 'EE123456791',
+        customer: 'Kofi Mensah',
+        email: 'kofi.mensah@example.com',
+        phone: '+233 50 555 7890',
+        date: '2025-04-20',
+        items: [
+            { id: 10, name: 'PEGASUS', price: 1234.87, quantity: 1 },
+            { id: 6, name: 'MONOGOTAS (COCO)', price: 519.87, quantity: 1 }
+        ],
+        subtotal: 1754.74,
+        shipping: 130,
+        total: 1884.74,
+        status: 'pending',
+        address: '789 Beach Road, Cape Coast, Ghana',
+        notes: 'Deliver in the evening'
+    },
+    {
+        id: 'EE123456792',
+        customer: 'Ama Owusu',
+        email: 'ama.owusu@example.com',
+        phone: '+233 27 123 9876',
+        date: '2025-04-22',
+        items: [
+            { id: 3, name: 'ECLAIRE LATTAFA', price: 1039.87, quantity: 1 }
+        ],
+        subtotal: 1039.87,
+        shipping: 130,
+        total: 1169.87,
+        status: 'shipped',
+        address: '234 Market Street, Tamale, Ghana',
+        notes: ''
+    },
+    {
+        id: 'EE123456793',
+        customer: 'Kwame Asante',
+        email: 'kwame.asante@example.com',
+        phone: '+233 54 987 1234',
+        date: '2025-04-23',
+        items: [
+            { id: 11, name: 'RAMZ LATTAFA', price: 1169.87, quantity: 1 },
+            { id: 13, name: 'YARA LATTAFA', price: 1039.87, quantity: 1 }
+        ],
+        subtotal: 2209.74,
+        shipping: 0,
+        total: 2209.74,
+        status: 'cancelled',
+        address: '567 Hill Avenue, Takoradi, Ghana',
+        notes: 'Cancelled due to change of mind'
+    }
+];
+
+// DOM Elements
+const ordersList = document.getElementById('orders-list');
+const orderSearch = document.getElementById('order-search');
+const orderFilter = document.getElementById('order-filter');
+const orderDetailsModal = document.getElementById('order-details-modal');
+const orderDetailsContent = document.getElementById('order-details-content');
+const updateOrderStatusBtn = document.getElementById('update-order-status');
+const adminMenu = document.querySelectorAll('.admin-menu li a');
+const adminSections = document.querySelectorAll('.admin-section');
+const modalCloseButtons = document.querySelectorAll('.admin-modal-close');
+const adminLogoutBtn = document.getElementById('admin-logout');
+
+// Initialize Admin Dashboard
+function initAdmin() {
+    // Load orders
+    loadOrders();
+    
+    // Setup event listeners
+    setupEventListeners();
+}
+
+// Load orders into the table
+function loadOrders(searchTerm = '', statusFilter = 'all') {
+    // Filter orders based on search term and status
+    let filteredOrders = orders;
+    
+    if (searchTerm) {
+        searchTerm = searchTerm.toLowerCase();
+        filteredOrders = filteredOrders.filter(order => 
+            order.id.toLowerCase().includes(searchTerm) || 
+            order.customer.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    if (statusFilter !== 'all') {
+        filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
+    }
+    
+    // Clear the table
+    ordersList.innerHTML = '';
+    
+    // Add orders to the table
+    if (filteredOrders.length === 0) {
+        ordersList.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">No orders found</td>
+            </tr>
+        `;
+        return;
+    }
+    
+    filteredOrders.forEach(order => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${order.customer}</td>
+            <td>${formatDate(order.date)}</td>
+            <td>${order.items.length} item(s)</td>
+            <td>GH₵${order.total.toFixed(2)}</td>
+            <td><span class="status ${order.status}">${capitalizeFirstLetter(order.status)}</span></td>
+            <td class="actions">
+                <button class="view-order" data-id="${order.id}" title="View Details"><i class="fas fa-eye"></i></button>
+                <button class="edit-order" data-id="${order.id}" title="Edit Order"><i class="fas fa-edit"></i></button>
+                <button class="delete-order" data-id="${order.id}" title="Delete Order"><i class="fas fa-trash"></i></button>
+            </td>
+        `;
+        ordersList.appendChild(row);
+    });
+    
+    // Add event listeners to the buttons
+    document.querySelectorAll('.view-order').forEach(button => {
+        button.addEventListener('click', () => {
+            const orderId = button.getAttribute('data-id');
+            openOrderDetails(orderId);
+        });
+    });
+    
+    document.querySelectorAll('.edit-order').forEach(button => {
+        button.addEventListener('click', () => {
+            const orderId = button.getAttribute('data-id');
+            // Implement edit functionality
+            alert(`Edit order ${orderId} - This feature is coming soon!`);
+        });
+    });
+    
+    document.querySelectorAll('.delete-order').forEach(button => {
+        button.addEventListener('click', () => {
+            const orderId = button.getAttribute('data-id');
+            // Implement delete functionality
+            if (confirm(`Are you sure you want to delete order ${orderId}?`)) {
+                alert(`Order ${orderId} deleted - This feature is coming soon!`);
+            }
+        });
+    });
+}
+
+// Open order details modal
+function openOrderDetails(orderId) {
+    const order = orders.find(order => order.id === orderId);
+    
+    if (!order) return;
+    
+    // Populate modal content
+    orderDetailsContent.innerHTML = `
+        <div class="order-details-section">
+            <h4>Order Information</h4>
+            <div class="order-info-grid">
+                <div class="order-info-item">
+                    <div class="order-info-label">Order ID:</div>
+                    <div>${order.id}</div>
+                </div>
+                <div class="order-info-item">
+                    <div class="order-info-label">Date:</div>
+                    <div>${formatDate(order.date)}</div>
+                </div>
+                <div class="order-info-item">
+                    <div class="order-info-label">Status:</div>
+                    <div><span class="status ${order.status}">${capitalizeFirstLetter(order.status)}</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="order-details-section">
+            <h4>Customer Information</h4>
+            <div class="order-info-grid">
+                <div class="order-info-item">
+                    <div class="order-info-label">Name:</div>
+                    <div>${order.customer}</div>
+                </div>
+                <div class="order-info-item">
+                    <div class="order-info-label">Email:</div>
+                    <div>${order.email}</div>
+                </div>
+                <div class="order-info-item">
+                    <div class="order-info-label">Phone:</div>
+                    <div>${order.phone}</div>
+                </div>
+                <div class="order-info-item">
+                    <div class="order-info-label">Address:</div>
+                    <div>${order.address}</div>
+                </div>
+                ${order.notes ? `
+                <div class="order-info-item">
+                    <div class="order-info-label">Notes:</div>
+                    <div>${order.notes}</div>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+        
+        <div class="order-details-section">
+            <h4>Order Items</h4>
+            <table class="order-items-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${order.items.map(item => `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>GH₵${item.price.toFixed(2)}</td>
+                            <td>${item.quantity}</td>
+                            <td>GH₵${(item.price * item.quantity).toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            
+            <div class="order-summary">
+                <div class="order-summary-item">
+                    <span>Subtotal:</span>
+                    <span>GH₵${order.subtotal.toFixed(2)}</span>
+                </div>
+                <div class="order-summary-item">
+                    <span>Shipping:</span>
+                    <span>${order.shipping === 0 ? 'Free' : 'GH₵' + order.shipping.toFixed(2)}</span>
+                </div>
+                <div class="order-summary-item order-summary-total">
+                    <span>Total:</span>
+                    <span>GH₵${order.total.toFixed(2)}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="order-details-section">
+            <h4>Update Status</h4>
+            <select class="status-select" id="status-select">
+                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+        </div>
+    `;
+    
+    // Store the order ID for the update button
+    updateOrderStatusBtn.setAttribute('data-id', order.id);
+    
+    // Show the modal
+    orderDetailsModal.classList.add('active');
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    // Search orders
+    orderSearch.addEventListener('input', () => {
+        loadOrders(orderSearch.value, orderFilter.value);
+    });
+    
+    // Filter orders
+    orderFilter.addEventListener('change', () => {
+        loadOrders(orderSearch.value, orderFilter.value);
+    });
+    
+    // Update order status
+    updateOrderStatusBtn.addEventListener('click', () => {
+        const orderId = updateOrderStatusBtn.getAttribute('data-id');
+        const newStatus = document.getElementById('status-select').value;
+        
+        // Update order status (in a real app, this would be an API call)
+        const orderIndex = orders.findIndex(order => order.id === orderId);
+        if (orderIndex !== -1) {
+            orders[orderIndex].status = newStatus;
+            loadOrders(orderSearch.value, orderFilter.value);
+            orderDetailsModal.classList.remove('active');
+            showNotification(`Order ${orderId} status updated to ${capitalizeFirstLetter(newStatus)}`);
+        }
+    });
+    
+    // Close modal
+    modalCloseButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            orderDetailsModal.classList.remove('active');
+        });
+    });
+    
+    // Close modal when clicking outside
+    orderDetailsModal.addEventListener('click', (e) => {
+        if (e.target === orderDetailsModal) {
+            orderDetailsModal.classList.remove('active');
+        }
+    });
+    
+    // Navigation
+    adminMenu.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Get the section ID from the href
+            const sectionId = link.getAttribute('href').substring(1) + '-section';
+            
+            // Remove active class from all links and sections
+            adminMenu.forEach(link => link.parentElement.classList.remove('active'));
+            adminSections.forEach(section => section.classList.remove('active'));
+            
+            // Add active class to the clicked link and corresponding section
+            link.parentElement.classList.add('active');
+            document.getElementById(sectionId).classList.add('active');
+        });
+    });
+    
+    // Logout
+    adminLogoutBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = 'index.html';
+        }
+    });
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Helper function to capitalize first letter
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Show notification
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'admin-notification';
+    notification.innerHTML = `
+        <div class="admin-notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span>${message}</span>
+        </div>
+        <button class="admin-notification-close"><i class="fas fa-times"></i></button>
+    `;
+    
+    // Add styles
+    notification.style.position = 'fixed';
+    notification.style.bottom = '20px';
+    notification.style.right = '20px';
+    notification.style.backgroundColor = 'white';
+    notification.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+    notification.style.borderRadius = '4px';
+    notification.style.padding = '15px 20px';
+    notification.style.display = 'flex';
+    notification.style.justifyContent = 'space-between';
+    notification.style.alignItems = 'center';
+    notification.style.zIndex = '1000';
+    notification.style.transform = 'translateY(100px)';
+    notification.style.opacity = '0';
+    notification.style.transition = 'all 0.3s ease';
+    
+    const notificationContent = notification.querySelector('.admin-notification-content');
+    notificationContent.style.display = 'flex';
+    notificationContent.style.alignItems = 'center';
+    
+    const icon = notification.querySelector('.fa-check-circle');
+    icon.style.color = 'var(--admin-success)';
+    icon.style.marginRight = '10px';
+    icon.style.fontSize = '1.2rem';
+    
+    const closeButton = notification.querySelector('.admin-notification-close');
+    closeButton.style.background = 'none';
+    closeButton.style.border = 'none';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.fontSize = '1rem';
+    closeButton.style.color = '#999';
+    
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => {
+        notification.style.transform = 'translateY(0)';
+        notification.style.opacity = '1';
+    }, 10);
+    
+    // Hide notification after 3 seconds
+    const timeout = setTimeout(() => {
+        hideNotification();
+    }, 3000);
+    
+    // Close button event
+    closeButton.addEventListener('click', () => {
+        clearTimeout(timeout);
+        hideNotification();
+    });
+    
+    function hideNotification() {
+        notification.style.transform = 'translateY(100px)';
+        notification.style.opacity = '0';
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }
+}
+
+// Initialize the admin dashboard when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initAdmin);
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
